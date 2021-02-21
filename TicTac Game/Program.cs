@@ -28,6 +28,7 @@ namespace TicTac_Game
             };
             bool One = true;
             bool winner = false;
+            int endGame = 0;
             Drawboard(board);
             Console.WriteLine();
             
@@ -36,9 +37,13 @@ namespace TicTac_Game
 
                 if (One)
                 {
-                    Console.Write("Player 1: Please choose your field : ");
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write("Player 1 -");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(" Please choose your field : ");
                     playerOne = PlayerTurn(playerOne);
                     One = !One;
+                    endGame++;
                     board = UpDateOne(playerOne, board);
                     Console.Clear();
                     Drawboard(board);
@@ -46,13 +51,22 @@ namespace TicTac_Game
                     if (WinnerCheck(playerOne))
                     {
                         Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("PLAYER 1 has won!!!");
+                        Console.Write("PLAYER 1 has won!!!");
+                        winner = !winner;
+                    }
+                    if (endGame == 5)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                        Console.Write("Sorry... there is no winner!");
                         winner = !winner;
                     }
                 }
                 else
                 {
-                    Console.Write("Player 2: Please choose your field : ");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.Write("Player 2 -");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.Write(" Please choose your field : ");
                     playerTwo = PlayerTurn(playerTwo);
                     One = !One;
                     board = UpDateTwo(playerTwo, board);
@@ -60,16 +74,15 @@ namespace TicTac_Game
                     Drawboard(board);
                     Console.WriteLine();
                     if (WinnerCheck(playerTwo))
-                        {
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("PLAYER 2 has won!!!");
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write("PLAYER 2 has won!!!");
                         winner = !winner;
-                        }
+                    }
                 }
             }
             Console.ReadLine();
         }
-
         static bool WinnerCheck(int[,] player)
         {
             int sum = 0;
@@ -105,70 +118,106 @@ namespace TicTac_Game
         }
 
         static void Drawboard(string[,] boardD)
-        {
-                for (int row = 0; row < 3; row++)
+        {               
+            Console.WriteLine("       |       |      ");
+            for (int row = 0; row < 3; row++)
+            {
+                for (int column = 0; column < 3; column++)
                 {
-                    Console.WriteLine("       |       |      ");
-                    Console.WriteLine("   {0}   |   {1}   |   {2}   ", boardD[row, 0], boardD[row, 1], boardD[row, 2]);
-                    if (row == 0 || row == 1)
+                    if (boardD[row, column] == "X")
                     {
-                        Console.WriteLine("_______|_______|_______");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.Write("   {0}   ", boardD[row, column]);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        if (column == 0 || column == 1)
+                        {
+                            Console.Write("|");
+                        }
+                    }
+                    else if (boardD[row, column] == "O")
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write("   {0}   ", boardD[row, column]);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        if (column == 0 || column == 1)
+                        {
+                            Console.Write("|");
+                        }
                     }
                     else
                     {
-                        Console.WriteLine("       |       |");
+                        Console.Write("   {0}   ", boardD[row, column]);
+                        if (column == 0 || column == 1)
+                        {
+                            Console.Write("|");
+                        }
                     }
-                }           
+                    if (column == 2)
+                    {
+                        Console.WriteLine();
+                    }
+                }
+                if (row == 0 || row == 1)
+                {
+                    Console.WriteLine("_______|_______|_______");
+                    Console.WriteLine("       |       |      ");
+                }
+                else
+                {
+                        Console.WriteLine("       |       |");
+                }
+            }           
         }
 
         static int[,] PlayerTurn(int[,] player)
         {
-            int box = int.Parse(Console.ReadLine()); // add seciton to check for valid input
+            bool check = false;
+            int box = 10;
+            while (!check)
+            {
+                string selection = Console.ReadLine();
+                check = int.TryParse(selection, out box);
+                if (!check)
+                {
+                    Console.WriteLine("You did not enter a valid square number. Please try again. ");
+                    Console.WriteLine();
+                    Console.Write("Please choose a valid field : ");
+                }
+            }
             switch (box)
             {
                 case 1:
                     player[0, 0] = 1;
                     return player;
-                    break;
                 case 2:
                     player[0, 1] = 1;
                     return player;
-                    break;
                 case 3:
                     player[0, 2] = 1;
                     return player;
-                    break;
                 case 4:
                     player[1, 0] = 1;
                     return player;
-                    break;
                 case 5:
                     player[1, 1] = 1;
                     return player;
-                    break;
                 case 6:
                     player[1, 2] = 1;
                     return player;
-                    break;
                 case 7:
                     player[2, 0] = 1;
                     return player;
-                    break;
                 case 8:
                     player[2, 1] = 1;
                     return player;
-                    break;
                 case 9:
                     player[2, 2] = 1;
                     return player;
-                    break;
                 default:
-                    Console.WriteLine("You did not enter a valid square number. Please try again. ");
                     return player;
-                    break;
             }
         }
-
+        
         static string[,] UpDateOne(int[,] newPlayer, string[,] oldBoard)
         {
             for (int i=0; i < 3; i++)
